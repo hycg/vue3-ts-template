@@ -5,12 +5,12 @@ import presets from './presets/presets';
 // https://vitejs.dev/config/
 export default defineConfig((env) => {
   // env 环境变量
-  const viteEnv = loadEnv(env.mode, `.env.${env.mode}`);
+  const viteEnv = loadEnv(env.mode, process.cwd());
 
   return {
     base: viteEnv.VITE_BASE,
     // 插件
-    plugins: [presets()],
+    plugins: [presets(env)],
     // 别名设置
     resolve: {
       alias: {
@@ -35,16 +35,10 @@ export default defineConfig((env) => {
       },
     },
     build: {
-      brotliSize: false,
+      reportCompressedSize: false,
       // 消除打包大小超过500kb警告
       chunkSizeWarningLimit: 2000,
-      // 在生产环境移除console.log
-      terserOptions: {
-        compress: {
-          drop_console: true,
-          drop_debugger: true,
-        },
-      },
+      minify: 'esbuild',
       assetsDir: 'static/assets',
       // 静态资源打包到dist下的不同目录
       rollupOptions: {
